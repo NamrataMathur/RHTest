@@ -1,0 +1,15 @@
+site_name: OutCloud Documentation
+site_favicon: favicon.ico
+pages:
+
+  - Quick Start Guide to ownCloud: index.md
+  - Installation and Configuration:
+    - 'Installing your OwnCloud Server on Ubuntu 18.04': install.md
+    - 'Configuring ownCloud': configure.md
+    - 'User Management': userManagement.md
+    - 'Connecting your ownCloud client to your ownCloud server': connect.md
+
+use_directory_urls: false
+theme: null
+theme_dir: 'custom_themes/material-latest'
+copyright: © 2012-2019. All Rights Reserved.
