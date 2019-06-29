@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+<!-- Begin Jekyll SEO tag v2.5.0 -->
+<title>Introduction | ownCloud QuickStart</title>
+<meta name="generator" content="Jekyll v3.8.5" />
+<meta property="og:title" content="Introduction" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="A QuickStart guide to ownCloud" />
+<meta property="og:description" content="A QuickStart guide to ownCloud" />
+<link rel="canonical" href="http://localhost:8182/" />
+<meta property="og:url" content="http://localhost:8182/" />
+<meta property="og:site_name" content="ownCloud QuickStart" />
+<script type="application/ld+json">
+{"url":"http://localhost:8182/","headline":"Introduction","name":"ownCloud QuickStart","description":"A QuickStart guide to ownCloud","@type":"WebSite","@context":"http://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+
+    <link rel="stylesheet" href="/assets/css/style.css?v=325045ea1cf241db3005627894116bb49487f327">
+  </head>
+  <body>
+    <div class="container-lg px-3 my-5 markdown-body">
+      
+      <h1><a href="http://localhost:8182/">ownCloud QuickStart</a></h1>
+      
+
+      <h1 id="introduction">Introduction</h1>
+
+<p><strong>Welcome to ownCloud</strong> - The content collaboration platform that is open, reliable, secure, and efficient.</p>
+
+<p>Organizations that require to <em>share sensitive data</em> with both internal and external users can use ownCloud to share data securely and easily. ownCloud provides organizations with the visibility and control that is required to manage confidential data and enable <em>digital collaboration</em>. ownCloud enables users to access data on any device without consideration about where the data is stored while also complying with all your <em>business processes</em>.</p>
+
+<p>This QuickStart demonstrates how you can quickly install and configure your ownCloud server.</p>
+
+<h2 id="installing-your-owncloud-server">Installing your ownCloud Server</h2>
+
+<h3 id="deployment-recommendations">Deployment Recommendations</h3>
+
+<p>This Quick Start guide describes the installation of the ownCloud using the following specifications:</p>
+
+<ul>
+  <li>
+    <p>Operating system: Ubuntu 18.04.</p>
+  </li>
+  <li>
+    <p>Web server: Apache 2.4 with <a href="https://doc.owncloud.com/server/admin_manual/installation/manual_installation.html#multi-processing-module-mpm">prefork and mod_php</a>.</p>
+  </li>
+  <li>Database: MySQL 8 with InnoDB storage engine.</li>
+  <li>
+    <p>PHP 7.2.</p>
+  </li>
+  <li>Consider setting up a scale-out deployment, or using <a href="https://doc.owncloud.com/server/user_manual/files/federated_cloud_sharing.html">Federated Cloud Sharing</a> to keep individual ownCloud instances to a manageable size.</li>
+</ul>
+
+<p><strong>Important</strong>: Apart from the recommendation above, depending on your organization’s requirement of storage, users, high availability, etc., you will have specific system requirements that you require to meet to install your OwnCloud server. For specific system requirements for small workgroups, mid-size enterprises, and large enterprises, see the <a href="https://doc.owncloud.com/server/admin_manual/">ownCloud Administration Manual</a>. The ownCloud Administration Manual also covers information about Operating systems, Authentication, Backup processes, etc.</p>
+
+<h3 id="installation-on-ubuntu-1804">Installation on Ubuntu 18.04</h3>
+
+<p>This section specifies the steps required to install ownCloud on a fresh installation of Ubuntu 18.04. You require to run the commands in your terminal to complete the installation.</p>
+
+<p>This section describes a quick manual installation, and you can also install ownCloud using Docker or the Installation Wizard. For detailed steps for the different installation options, see <a href="https://doc.owncloud.com/server/admin_manual/installation/">ownCloud Administration Manual - Installation Options</a>.</p>
+
+<h4 id="prerequisites">Prerequisites</h4>
+
+<ul>
+  <li>Fresh install of Ubuntu 18.04 with SSH enabled.</li>
+  <li>A non-root user with sudo privileges.</li>
+  <li><a href="https://www.digitalocean.com/community/tutorials/how-to-install-linux-apache-mysql-php-lamp-stack-ubuntu-18-04">Install and configure the LAMP stack</a>: ownCloud requires a web server, a database, and PHP to function properly. Setting up a LAMP stack (Linux, Apache, MySQL, and PHP) server fulfills all of these requirements.</li>
+  <li>Setup an your SSL certificates.</li>
+</ul>
+
+<h4 id="step-1-installing-owncloud">Step 1: Installing ownCloud</h4>
+
+<p>ownCloud maintains a dedicated repository for Ubuntu that you can add to your server.</p>
+
+<ol>
+  <li>Download the release key from ownCloud using the following curl command and import it with the add command of the apt-key utility: <br />
+<code class="highlighter-rouge">curl https://download.owncloud.org/download/repositories/10.0/Ubuntu_18.04/Release.key | sudo apt-key add -</code><br />
+The <code class="highlighter-rouge">Release.key</code> file contains a PGP (Pretty Good Privacy) public key that <code class="highlighter-rouge">apt</code> uses to verify the authenticity of the ownCloud package.</li>
+  <li>Create a file called <code class="highlighter-rouge">owncloud.list</code> in the <code class="highlighter-rouge">sources.list.d</code> directory for <code class="highlighter-rouge">apt</code>. <br />
+<code class="highlighter-rouge">echo 'deb http://download.owncloud.org/download/repositories/10.0/Ubuntu_18.04/ /' | sudo tee /etc/apt/sources.list.d/owncloud.list</code><br />
+This file contains the address to the ownCloud repository.</li>
+</ol>
+
+<p>Now, you can use the package manager to find and install ownCloud. Along with the main package, you can also install a few additional PHP libraries that ownCloud uses to add extra functionality. To update your local package index and install all the libraries, type the following command:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ sudo apt update
+$ sudo apt install php-bz2 php-curl php-gd php-imagick php-intl php-mbstring php-xml php-zip owncloud-files
+</code></pre></div></div>
+
+<h4 id="step-2-adjusting-the-document-root">Step 2: Adjusting the Document Root</h4>
+
+<p>The ownCloud package that is installed will copy the web files to the <code class="highlighter-rouge">/var/www/owncloud</code> file on the server. Currently, the Apache virtual host configuration is set up to serve files out of a different directory. Therefore, you need to change the <code class="highlighter-rouge">DocumentRoot</code> setting in your configuration to point to a new directory.</p>
+
+<p>You can find which virtual host files reference your domain name or IP address using the <code class="highlighter-rouge">apache2ctl</code> utility with the <code class="highlighter-rouge">DUMP_VHOSTS</code> option. Filter the output by the domain name or IP address of your server to find which files you need to edit:<br />
+<code class="highlighter-rouge">sudo apache2ctl -t -D DUMP_VHOSTS | grep server_domain_or_IP</code></p>
+
+<p>The output of this command looks something similar to this:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>:443                  server_domain_or_IP (/etc/apache2/sites-enabled/server_domain_or_IP-le-ssl.conf:2)
+         port 80 namevhost server_domain_or_IP (/etc/apache2/sites-enabled/server_domain_or_IP.conf:1)
+</code></pre></div></div>
+
+<p>In the parentheses, you can see each of the files that reference the domain name or IP address that is used to access ownCloud. These are the files you require to edit.</p>
+
+<p>For each match, in a text editor, open the file with <code class="highlighter-rouge">sudo</code> privileges:<br />
+<code class="highlighter-rouge">$ sudo nano /etc/apache2/sites-enabled/server_domain_or_IP.conf</code></p>
+
+<p>Within the file, search for the <code class="highlighter-rouge">DocumentRoot</code> directive and change the line to point to the <code class="highlighter-rouge">/var/www/owncloud</code> directory. For example:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>                         Example DocumentRoot edit                         
+                         
+&lt;VirtualHost *:80&gt;
+    . . .
+    DocumentRoot /var/www/owncloud
+    . . .
+&lt;/VirtualHost&gt;
+</code></pre></div></div>
+
+<p>After you have completed editing the file, save and close the file. Complete this process for each of the files that references your domain name (or IP address if you have not configured a domain for your server).</p>
+
+<p>After completion, check the syntax of your Apache files to make sure there were no detectable typos in your configuration, using the following command:<br />
+<code class="highlighter-rouge">$ sudo apache2ctl configtest</code></p>
+
+<p>Restart Apache service to activate the new changes, using the following command:<br />
+<code class="highlighter-rouge">sudo systemctl reload apache2</code></p>
+
+<p>Apache should now know how to serve your ownCloud files.</p>
+
+<h4 id="step-3-create-the-mysql-database">Step 3: Create the MySQL database</h4>
+
+<ol>
+  <li>Login to the MySQL shell, typing the following command:<br />
+<code class="highlighter-rouge">$ sudo mysql</code></li>
+  <li>To create a MySQL database, from within the MySQL shell, type the following command:<br />
+<code class="highlighter-rouge">CREATE DATABASE owncloud CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;</code></li>
+  <li>To create a MySQL user account and grant access to the database, type the following command:<br />
+<code class="highlighter-rouge">GRANT ALL ON owncloud.* TO 'owncloudsuser'@'localhost' IDENTIFIED BY 'change-with-strong-password';</code></li>
+  <li>Perform the flush privileges operation to ensure that the running instance of MySQL knows about the recent privilege assignment:<br />
+<code class="highlighter-rouge">FLUSH PRIVILEGES;</code></li>
+  <li>Exit the MySQL console:<br />
+<code class="highlighter-rouge">Exit</code></li>
+</ol>
+
+<p>Now that you have installed ownCloud, set up the database and configured all the necessary services, you can configure your ownCloud by opening a web browser and typing <code class="highlighter-rouge">https://server_domain_or_IP/owncloud</code>, where IP is the IP address of your ownCloud instance.</p>
+
+<h2 id="configuring-owncloud">Configuring ownCloud</h2>
+
+<p>To access the ownCloud web interface, open a web browser and type <code class="highlighter-rouge">https://server_domain_or_IP/owncloud</code>, where IP is the IP address of your ownCloud instance.</p>
+
+<p>You should see the ownCloud web configuration page in your browser:</p>
+
+<p><img src="/media/ownCloudLoginPage.png" alt="ownCloud Login Page" /></p>
+
+<p>Create an admin account by typing a username and password and then click the <strong>Storage &amp; Database</strong> link. Leave the <strong>Data Folder</strong> setting unchanged and click the <strong>MySQL/MariaDB</strong> option, and enter the database information that you have configured previously.</p>
+
+<p><img src="/media/ownCloudLoginConfig.png" alt="Creating an admin account" /></p>
+
+<p>Click <strong>Finish setup</strong> to sign into to ownCloud and open the Web UI of ownCloud:</p>
+
+<p><img src="/media/ownCloudMainUIPg.png" alt="ownCloud Web Interface" /></p>
+
+<p>Administrators can manage users using the user management page of the ownCloud Web UI, and once administrators configure user accounts, they also will be able to access ownCloud using the <code class="highlighter-rouge">https://server_domain_or_IP/owncloud</code> URL, where IP is the IP address of the ownCloud instance.</p>
+
+<p>For detailed information on configuration of ownCloud, see ownCloud Administration Manual - Configuration](https://doc.owncloud.com/server/admin_manual/configuration/).</p>
+
+<h2 id="user-management">User Management</h2>
+
+<p>Administrators can perform various user management tasks, such as create users, filter users by group, edit user profile details, send automatic email notifications to users, etc. on their ownCloud Web UI.</p>
+
+<p><strong>Important</strong>: ownCloud administrators must have command line or cron access.</p>
+
+<h3 id="creating-a-new-user-account">Creating a new user account</h3>
+
+<p>This section describes how an administrator can create a new user account using the ownCloud Web UI.</p>
+
+<ol>
+  <li>Log into ownCloud using the <code class="highlighter-rouge">https://server_domain_or_IP/owncloud</code> URL as an administrator.</li>
+  <li>Navigate to the user administration page:<br />
+<img src="/media/ownCloudUserAdminPg.png" alt="ownCloud User Administration page" /></li>
+  <li>To create an ownCloud user, do the following:
+    <ol>
+      <li>Type the ownCloud username and password for the user.<br />
+   <strong>Note</strong>:  You cannot change the ownCloud username once it is created, which become your users’ ownCloud user IDs. However, you can edit the user’s Full Name and Passwords at any time.</li>
+      <li>From the Groups drop-down list, select the group to which you want to add the user.<br />
+   <strong>Note</strong>: You have the option to add a user to an existing group, or you can also create a new group for this user. You can create new groups by clicking the <strong>Groups</strong> drop-down list and click add group. Group assignments can be changed at any time.</li>
+      <li>Click <strong>Create</strong>.</li>
+    </ol>
+  </li>
+</ol>
+
+<h2 id="using-owncloud">Using ownCloud</h2>
+
+<p>You can use ownCloud to share files and folders from your computer with other users and synchronize them using your ownCloud server. Once you place files in the shared directories on your device, these files are immediately synchronized with the server and with other devices using the ownCloud Desktop Sync Client, Android app, or iOS app.</p>
+
+<p>ownCloud has client applications for Window, OS X, and Linux desktops, and for Android and iOS devices. You can download the client that you require from the <a href="https://owncloud.com/client/">ownCloud Web site</a>. The application for mobile devices is available on Google Play and Apple App Store.</p>
+
+<h3 id="configuring-the-owncloud-desktop-or-mobile-client">Configuring the ownCloud Desktop or Mobile Client</h3>
+
+<p>Once you have installed the desktop client on your device, do the following to connect to your ownCloud server and synchronize your local files with the ownCloud server:</p>
+
+<ol>
+  <li>Launch the ownCloud desktop client.<br />
+This displays the “ownCloud Connection Wizard.”</li>
+  <li>In the <code class="highlighter-rouge">Setup ownCloud server</code> screen, in the <strong>Server Address</strong> field, enter the IP address of your ownCloud server.</li>
+  <li>In the <code class="highlighter-rouge">Enter user credentials</code> screen, enter the username and password of your ownCloud user account and click <strong>Next</strong>.</li>
+  <li>In the <code class="highlighter-rouge">Setup local folder options</code> screen, specify whether you want to sync all of your files or only selected files and folders on the ownCloud server. <br />
+<img src="/media/ownCloudConnWizardSyncOptions.png" alt="ownCloud Connection Wizard - Setup local folder options screen" /><br />
+The default local sync folder, where you store the files that you want to synchronize with the ownCloud server, is located in your home directory and named <code class="highlighter-rouge">ownCloud</code>.  You can also change the default local sync folder.</li>
+  <li>Click <strong>Connect</strong> and then <strong>Finish</strong> to save the settings. <br />
+Once you click <strong>Connect</strong>, the client attempts to connect to your ownCloud server, and when it is successful, you will see two buttons: one to connect to your ownCloud Web UI and the other one to open your local folder. The client will also start synchronizing your files.</li>
+</ol>
+
+
+
+      
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/anchor-js/4.1.0/anchor.min.js" integrity="sha256-lZaRhKri35AyJSypXXs4o6OPFTbTmUoltBbDCbdzegg=" crossorigin="anonymous"></script>
+    <script>anchors.add();</script>
+    
+  </body>
+</html>
