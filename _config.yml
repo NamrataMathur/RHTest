@@ -7,5 +7,7 @@ description: A QuickStart guide to ownCloud
 # List of links in the navigation bar
 navbar-links:
   QuickStart Guide to ownCloud: "index.md"
+url: NamrataMathur.github.io
+baseurl: /RHTest  
 port: 8182
 #host: site1.enx.rentals
